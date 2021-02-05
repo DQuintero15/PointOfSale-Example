@@ -6,6 +6,7 @@
 package es.storehouse.frames;
 
 import es.storehouse.models.Product;
+import es.storehouse.models.Provider;
 import es.storehouse.models.StoreException;
 import es.storehouse.mysql.MySQLProductDAO;
 import es.storehouse.mysql.MySQLProviderDAO;
@@ -151,6 +152,7 @@ public final class Inventory extends javax.swing.JInternalFrame {
         txt_id.setEditable(false);
         txt_id.setBackground(new java.awt.Color(255, 255, 255));
         txt_id.setForeground(new java.awt.Color(32, 51, 46));
+        txt_id.setEnabled(false);
         txt_id.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         txt_id.setPlaceholder("");
         txt_id.setSelectionColor(new java.awt.Color(32, 51, 46));
@@ -392,7 +394,7 @@ public final class Inventory extends javax.swing.JInternalFrame {
     private void btn_insertProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_insertProductActionPerformed
         // TODO add your handling code here:
 
-        if (!txt_amount.getText().isEmpty() || txt_buyPrice.getText().isEmpty()
+        if (txt_amount.getText().isEmpty() || txt_buyPrice.getText().isEmpty()
                 || txt_productName.getText().isEmpty() || combo_Provider.getSelectedItem() == null
                 || txt_sellPrice.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Hay campos vacios", "Aviso!", JOptionPane.INFORMATION_MESSAGE);
@@ -402,24 +404,25 @@ public final class Inventory extends javax.swing.JInternalFrame {
             String provider = combo_Provider.getSelectedItem().toString();
             String productName = txt_productName.getText();
             int amount = Integer.parseInt(txt_amount.getText());
-            BigDecimal buyPrice = BigDecimal.valueOf(Double.parseDouble(txt_buyPrice.getText()));
-            BigDecimal sellPrice = BigDecimal.valueOf(Double.parseDouble(txt_sellPrice.getText()));
+            double buyPrice = Double.parseDouble(txt_buyPrice.getText());
+            double sellPrice = Double.parseDouble(txt_sellPrice.getText());
 
-            Product p = new Product(productName, amount, buyPrice, sellPrice, provider);
+            Product p = new Product(productName, amount, buyPrice, sellPrice);
+            Provider a = new Provider(provider);
             p.setName(productName);
             p.setAmount(amount);
             p.setBuyPrice(buyPrice);
             p.setSellPrice(sellPrice);
-            p.setProvider(provider);
+            a.setName(provider);
 
             MySQLProductDAO productDAO = new MySQLProductDAO();
 
             try {
-                productDAO.insert(p);
-                fillData();
+                productDAO.insertProduct(p, a);
+
                 clearTextFields();
             } catch (StoreException ex) {
-
+                fillData();
             }
         }
 
@@ -454,7 +457,7 @@ public final class Inventory extends javax.swing.JInternalFrame {
 
     private void btn_UpdateProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_UpdateProductActionPerformed
         // TODO add your handling code here:
-        if (!txt_amount.getText().isEmpty() || txt_buyPrice.getText().isEmpty()
+        if (txt_amount.getText().isEmpty() || txt_buyPrice.getText().isEmpty()
                 || txt_productName.getText().isEmpty() || combo_Provider.getSelectedItem() == null
                 || txt_sellPrice.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Hay campos vacios", "Aviso!", JOptionPane.INFORMATION_MESSAGE);
@@ -467,20 +470,22 @@ public final class Inventory extends javax.swing.JInternalFrame {
             int id = Integer.parseInt(txt_id.getText());
             String productName = txt_productName.getText();
             int amount = Integer.parseInt(txt_amount.getText());
-            BigDecimal buyPrice = BigDecimal.valueOf(Double.parseDouble(txt_buyPrice.getText()));
-            BigDecimal sellPrice = BigDecimal.valueOf(Double.parseDouble(txt_sellPrice.getText()));
+            double buyPrice = Double.parseDouble(txt_buyPrice.getText());
+            double sellPrice = Double.parseDouble(txt_sellPrice.getText());
 
-            Product p = new Product(id, productName, amount, buyPrice, sellPrice, provider);
+            Product p = new Product(id, productName, amount, buyPrice, sellPrice);
+            Provider a = new Provider(provider);
+
             p.setProductId(id);
             p.setName(productName);
             p.setAmount(amount);
             p.setBuyPrice(buyPrice);
             p.setSellPrice(sellPrice);
-            p.setProvider(provider);
+            a.setName(provider);
 
             try {
 
-                productDAO.update(p);
+                productDAO.updateProduct(p, a);
 
             } catch (StoreException ex) {
                 fillData();

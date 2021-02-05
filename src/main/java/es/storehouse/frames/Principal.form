@@ -23,7 +23,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new javax.swing.ImageIcon(getClass().getClassLoader().getResource(&quot;icons8-supplier-48.png&quot;))" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Provedores          "/>
+            <Property name="text" type="java.lang.String" value="Proveedores          "/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto" size="15" style="0"/>
             </Property>
@@ -56,6 +56,9 @@
               <Font name="Roboto" size="15" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menu_orderMouseClicked"/>
+          </Events>
         </Menu>
         <Menu class="javax.swing.JMenu" name="menu_reports">
           <Properties>

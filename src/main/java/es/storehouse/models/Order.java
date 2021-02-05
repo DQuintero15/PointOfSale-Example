@@ -8,14 +8,16 @@ public class Order {
     private int amount;
     private Date date;
     private int productId;
-    private int providerId;
+    private double price;
 
-    public Order(int orderId, int amount, Date date, int productId, int providerId) {
-        this.orderId = orderId;
+    public Order(int productId, int amount, double price, Date date) {
         this.amount = amount;
         this.date = date;
         this.productId = productId;
-        this.providerId = providerId;
+        this.price = price;
+    }
+
+    public Order() {
     }
 
     public int getOrderId() {
@@ -50,12 +52,12 @@ public class Order {
         this.productId = productId;
     }
 
-    public int getProviderId() {
-        return providerId;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public void setProviderId(int providerId) {
-        this.providerId = providerId;
+    public double getPrice() {
+        return price;
     }
 
 }

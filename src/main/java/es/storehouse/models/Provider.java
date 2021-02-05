@@ -10,6 +10,10 @@ public class Provider {
         this.name = name;
     }
 
+    public Provider() {
+    }
+    
+
     public Provider(String name) {
         this.name = name;
     }

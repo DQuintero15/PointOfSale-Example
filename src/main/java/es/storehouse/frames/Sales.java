@@ -6,13 +6,17 @@
 package es.storehouse.frames;
 
 import es.storehouse.models.Product;
+import es.storehouse.models.Provider;
+import es.storehouse.models.Sale;
 import es.storehouse.models.StoreException;
 import es.storehouse.mysql.MySQLProductDAO;
+import es.storehouse.mysql.MySQLSaleDAO;
 import java.awt.event.KeyEvent;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import javax.swing.event.ChangeEvent;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,6 +24,8 @@ import javax.swing.table.DefaultTableModel;
  * @author dquintero
  */
 public final class Sales extends javax.swing.JInternalFrame {
+
+    DefaultTableModel model;
 
     /**
      * Creates new form Sales
@@ -70,7 +76,7 @@ public final class Sales extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txt_productSaleAmount = new necesario.TextField();
-        rSButtonIcon_new1 = new newscomponents.RSButtonIcon_new();
+        btn_generatePurchase = new newscomponents.RSButtonIcon_new();
 
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -114,11 +120,11 @@ public final class Sales extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Producto", "Cantidad", "Precio de Venta", "Proveedor", "Total", "Fecha"
+                "ID", "Producto", "Cantidad", "Precio de Venta", "Total", "Fecha"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -199,33 +205,38 @@ public final class Sales extends javax.swing.JInternalFrame {
 
         txt_productName.setEditable(false);
         txt_productName.setForeground(new java.awt.Color(32, 51, 46));
-        txt_productName.setText("Producto...");
+        txt_productName.setText("Producto");
         txt_productName.setToolTipText("");
         txt_productName.setEnabled(false);
+        txt_productName.setPlaceholder("Producto");
         txt_productName.setSelectionColor(new java.awt.Color(32, 51, 46));
 
         txt_productId.setEditable(false);
         txt_productId.setForeground(new java.awt.Color(32, 51, 46));
-        txt_productId.setText("ID...");
+        txt_productId.setText("ID");
         txt_productId.setEnabled(false);
+        txt_productId.setPlaceholder("ID");
         txt_productId.setSelectionColor(new java.awt.Color(32, 51, 46));
 
         txt_productStock.setEditable(false);
         txt_productStock.setForeground(new java.awt.Color(32, 51, 46));
-        txt_productStock.setText("Stock...");
+        txt_productStock.setText("Stock");
         txt_productStock.setEnabled(false);
+        txt_productStock.setPlaceholder("Stock");
         txt_productStock.setSelectionColor(new java.awt.Color(32, 51, 46));
 
         txt_sellPrice.setEditable(false);
         txt_sellPrice.setForeground(new java.awt.Color(32, 51, 46));
-        txt_sellPrice.setText("Precio de Venta...");
+        txt_sellPrice.setText("Precio de Venta");
         txt_sellPrice.setEnabled(false);
+        txt_sellPrice.setPlaceholder("Precio de Venta");
         txt_sellPrice.setSelectionColor(new java.awt.Color(32, 51, 46));
 
         txt_provider.setEditable(false);
         txt_provider.setForeground(new java.awt.Color(32, 51, 46));
-        txt_provider.setText("Proveedor...");
+        txt_provider.setText("Proveedor");
         txt_provider.setEnabled(false);
+        txt_provider.setPlaceholder("Proveedor");
         txt_provider.setSelectionColor(new java.awt.Color(32, 51, 46));
 
         btn_addProduct.setBackground(new java.awt.Color(38, 169, 94));
@@ -242,11 +253,21 @@ public final class Sales extends javax.swing.JInternalFrame {
         btn_deleteProduct.setText("Retirar Producto");
         btn_deleteProduct.setBgHover(new java.awt.Color(241, 196, 15));
         btn_deleteProduct.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.REMOVE_CIRCLE);
+        btn_deleteProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteProductActionPerformed(evt);
+            }
+        });
 
         btn_cancelSale.setBackground(new java.awt.Color(168, 1, 1));
         btn_cancelSale.setText("Cancelar Venta");
         btn_cancelSale.setBgHover(new java.awt.Color(168, 1, 1));
         btn_cancelSale.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CANCEL);
+        btn_cancelSale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelSaleActionPerformed(evt);
+            }
+        });
 
         dateChooser.setBackground(new java.awt.Color(35, 35, 36));
         dateChooser.setBgColor(new java.awt.Color(35, 35, 36));
@@ -264,12 +285,17 @@ public final class Sales extends javax.swing.JInternalFrame {
         txt_productSaleAmount.setPlaceholder("Digite la cantidad");
         txt_productSaleAmount.setSelectionColor(new java.awt.Color(32, 51, 46));
 
-        rSButtonIcon_new1.setBackground(new java.awt.Color(38, 169, 94));
-        rSButtonIcon_new1.setText("Generar Compra");
-        rSButtonIcon_new1.setBackgroundHover(new java.awt.Color(38, 169, 94));
-        rSButtonIcon_new1.setFont(new java.awt.Font("Roboto Bold", 1, 24)); // NOI18N
-        rSButtonIcon_new1.setIconTextGap(10);
-        rSButtonIcon_new1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD_SHOPPING_CART);
+        btn_generatePurchase.setBackground(new java.awt.Color(38, 169, 94));
+        btn_generatePurchase.setText("Generar Compra");
+        btn_generatePurchase.setBackgroundHover(new java.awt.Color(38, 169, 94));
+        btn_generatePurchase.setFont(new java.awt.Font("Roboto Bold", 1, 24)); // NOI18N
+        btn_generatePurchase.setIconTextGap(10);
+        btn_generatePurchase.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD_SHOPPING_CART);
+        btn_generatePurchase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_generatePurchaseActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -283,7 +309,7 @@ public final class Sales extends javax.swing.JInternalFrame {
                         .addGap(0, 369, Short.MAX_VALUE)
                         .addComponent(bll_totalPrice)
                         .addGap(51, 51, 51)
-                        .addComponent(rSButtonIcon_new1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_generatePurchase, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addComponent(pnl_totalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -363,7 +389,7 @@ public final class Sales extends javax.swing.JInternalFrame {
                         .addGap(33, 33, 33)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(bll_totalPrice)
-                            .addComponent(rSButtonIcon_new1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btn_generatePurchase, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(71, Short.MAX_VALUE))
         );
 
@@ -384,19 +410,25 @@ public final class Sales extends javax.swing.JInternalFrame {
     private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
         // TODO add your handling code here:
 
+
     }//GEN-LAST:event_productTableMouseClicked
 
+    /**
+     *
+     */
     private void search() {
         String name = txt_searchProduct.getText().trim();
         if (name.isEmpty()) {
             return;
         }
         try {
-            Product p = new MySQLProductDAO().searchProduct(name);
+
+            Provider a = new Provider();
+            Product p = new MySQLProductDAO().searchProduct(name, a);
 
             txt_productName.setText(p.getName());
             txt_productId.setText(String.valueOf(p.getProductId()));
-            txt_provider.setText(p.getProvider());
+            txt_provider.setText(a.getName());
             txt_productStock.setText(String.valueOf(p.getAmount()));
             txt_sellPrice.setText(String.valueOf(p.getSellPrice()));
 
@@ -423,52 +455,132 @@ public final class Sales extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txt_searchProductKeyReleased
 
+    void clearTextFields() {
+        txt_productId.setText("");
+        txt_productName.setText("");
+        txt_productSaleAmount.setText("");
+        txt_productStock.setText("");
+        txt_provider.setText("");
+        txt_searchProduct.setText("");
+        txt_sellPrice.setText("");
+    }
+
     private void btn_addProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addProductActionPerformed
         // TODO add your handling code here:
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
+        if (txt_productSaleAmount.getText().isEmpty() || Integer.parseInt(txt_productSaleAmount.getText()) == 0) {
+            JOptionPane.showMessageDialog(null, "Ingrese la cantidad a vender", "Aviso", JOptionPane.WARNING_MESSAGE);
+        } else {
+            if (Integer.parseInt(txt_productStock.getText()) - Integer.parseInt(txt_productSaleAmount.getText()) < 0) {
+                JOptionPane.showMessageDialog(null, "Stock Insuficiente", "Aviso", JOptionPane.WARNING_MESSAGE);
+            } else {
+                
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                model = (DefaultTableModel) salesTable.getModel();
 
-        int stock = Integer.parseInt(txt_productSaleAmount.getText());
-        Double sellPrice = Double.parseDouble(txt_sellPrice.getText());
-        Object[] data = new Object[7];
-        data[0] = txt_productId.getText();
-        data[1] = txt_productName.getText();
-        data[2] = txt_productSaleAmount.getText();
-        data[3] = txt_sellPrice.getText();
-        data[4] = txt_provider.getText();
-        data[5] = (stock) * (sellPrice);
-        data[6] = dateFormat.format(dateChooser.getDate());
+                int stock = Integer.parseInt(txt_productSaleAmount.getText());
+                Double sellPrice = Double.parseDouble(txt_sellPrice.getText());
+                Object[] data = new Object[7];
+                data[0] = txt_productId.getText();
+                data[1] = txt_productName.getText();
+                data[2] = txt_productSaleAmount.getText();
+                data[3] = txt_sellPrice.getText();
+                data[4] = txt_provider.getText();
+                data[5] = (stock) * (sellPrice);
+                data[6] = dateFormat.format(dateChooser.getDate());
 
-        model.addRow(data);
+                model.addRow(data);
 
-        Double totalPrice = 0.0;
-        Double columnValue = 0.0;
+                Double totalPrice = 0.0;
+                Double columnValue = 0.0;
 
-        if (salesTable.getRowCount() > 0) {
-            for (int i = 0; i < salesTable.getRowCount(); i++) {
-                columnValue = Double.parseDouble(salesTable.getValueAt(i, 5).toString());
-                totalPrice += columnValue;
+                if (salesTable.getRowCount() > 0) {
+                    for (int i = 0; i < salesTable.getRowCount(); i++) {
+                        columnValue = Double.parseDouble(salesTable.getValueAt(i, 5).toString());
+                        totalPrice += columnValue;
 
+                    }
+
+                }
+                txt_totalPrice.setText(String.valueOf(totalPrice));
+                clearTextFields();
             }
-
         }
-        txt_totalPrice.setText(String.valueOf(totalPrice));
     }//GEN-LAST:event_btn_addProductActionPerformed
 
     private void salesTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_salesTableKeyReleased
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
+        model = (DefaultTableModel) salesTable.getModel();
         int[] rows = salesTable.getSelectedRows();
         if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
-            if (salesTable.getSelectedRow() >= 0) {
-                for (int i = 0; i < rows.length; i++) {
-                    model.removeRow(rows[i]);
-                }
+            removeProduct(salesTable, model, rows);
+        }
+
+    }//GEN-LAST:event_salesTableKeyReleased
+
+    private void removeProduct(JTable table, DefaultTableModel model, int[] rows) {
+        Double actualPrice = 0.0;
+        rows = table.getSelectedRows();
+        if (table.getSelectedRow() >= 0) {
+            for (int i = 0; i < rows.length; i++) {
+                model.removeRow(rows[i]);
+            }
+        }
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Double priceRemove = Double.parseDouble(table.getValueAt(i, 5).toString());
+            actualPrice = Double.parseDouble(txt_totalPrice.getText()) - priceRemove;
+        }
+        txt_totalPrice.setText(String.valueOf(actualPrice));
+        clearTextFields();
+    }
+
+    private void btn_deleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteProductActionPerformed
+        // TODO add your handling code here:
+        model = (DefaultTableModel) salesTable.getModel();
+        int[] rows = salesTable.getSelectedRows();
+        removeProduct(salesTable, model, rows);
+        clearTextFields();
+    }//GEN-LAST:event_btn_deleteProductActionPerformed
+
+    private void btn_cancelSaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelSaleActionPerformed
+        // TODO add your handling code here:
+        model = (DefaultTableModel) salesTable.getModel();
+        model.setRowCount(0);
+        clearTextFields();
+        txt_totalPrice.setText("0");
+    }//GEN-LAST:event_btn_cancelSaleActionPerformed
+
+    private void btn_generatePurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generatePurchaseActionPerformed
+        // TODO add your handling code here:
+        MySQLSaleDAO saleDAO = new MySQLSaleDAO();
+
+        int amount;
+        Double tPrice;
+        Date date;
+        Sale s;
+
+        for (int i = 0; i < salesTable.getRowCount(); i++) {
+            amount = Integer.parseInt(salesTable.getValueAt(i, 2).toString());
+            tPrice = Double.parseDouble(salesTable.getValueAt(i, 5).toString());
+            date = Date.valueOf(new java.sql.Date(dateChooser.getDate().getTime()).toString());
+            int id = Integer.parseInt(salesTable.getValueAt(i, 0).toString());
+
+            s = new Sale(amount, tPrice, date, id);
+
+            try {
+                saleDAO.generateSale(s);
+
+            } catch (StoreException ex) {
+                JOptionPane.showMessageDialog(null, "Error al generar compra", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         }
-    }//GEN-LAST:event_salesTableKeyReleased
+
+        JOptionPane.showMessageDialog(null, "Venta Relizada Correctamente", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        clearTextFields();
+        txt_totalPrice.setText("0.0");
+        model.setRowCount(0);
+    }//GEN-LAST:event_btn_generatePurchaseActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -476,6 +588,7 @@ public final class Sales extends javax.swing.JInternalFrame {
     private newscomponents.RSButtonBigIcon_new btn_addProduct;
     private newscomponents.RSButtonBigIcon_new btn_cancelSale;
     private newscomponents.RSButtonBigIcon_new btn_deleteProduct;
+    private newscomponents.RSButtonIcon_new btn_generatePurchase;
     private RSMaterialComponent.RSButtonIconTwo btn_searchProduct;
     private newscomponents.RSDateChooser dateChooser;
     private javax.swing.JLabel jLabel1;
@@ -485,7 +598,6 @@ public final class Sales extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel pnl_totalPrice;
     private RSMaterialComponent.RSTableMetroCustom productTable;
-    private newscomponents.RSButtonIcon_new rSButtonIcon_new1;
     private RSMaterialComponent.RSTableMetroCustom salesTable;
     private necesario.TextField txt_productId;
     private necesario.TextField txt_productName;

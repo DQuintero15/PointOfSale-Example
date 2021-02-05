@@ -69,6 +69,7 @@ public final class Providers extends javax.swing.JInternalFrame {
         txt_id.setEditable(false);
         txt_id.setBackground(new java.awt.Color(255, 255, 255));
         txt_id.setForeground(new java.awt.Color(32, 51, 46));
+        txt_id.setEnabled(false);
         txt_id.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         txt_id.setPlaceholder("");
         txt_id.setSelectionColor(new java.awt.Color(32, 51, 46));

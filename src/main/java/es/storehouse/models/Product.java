@@ -1,37 +1,33 @@
 package es.storehouse.models;
 
-import java.math.BigDecimal;
-
 public class Product {
 
     private int productId;
     private String name;
     private int amount;
-    private BigDecimal buyPrice;
-    private BigDecimal sellPrice;
-    private String provider;
+    private double buyPrice;
+    private double sellPrice;
+    private int providerId;
 
-    public Product(int productId, String name, int amount, BigDecimal buyPrice, BigDecimal sellPrice, String provider) {
+    public Product(int productId, String name, int amount, double buyPrice, double sellPrice) {
         this.productId = productId;
         this.name = name;
         this.amount = amount;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
-        this.provider = provider;
     }
 
-    public Product(String name, int amount, BigDecimal buyPrice, BigDecimal sellPrice, String provider) {
+    public Product(String name, int amount, double buyPrice, double sellPrice) {
         this.name = name;
         this.amount = amount;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
-        this.provider = provider;
     }
 
-    public Product(String name){
+    public Product(String name) {
         this.name = name;
     }
-    
+
     public Product(int productId) {
         this.productId = productId;
     }
@@ -60,28 +56,28 @@ public class Product {
         this.amount = amount;
     }
 
-    public BigDecimal getBuyPrice() {
+    public double getBuyPrice() {
         return buyPrice;
     }
 
-    public void setBuyPrice(BigDecimal buyPrice) {
+    public void setBuyPrice(double buyPrice) {
         this.buyPrice = buyPrice;
     }
 
-    public BigDecimal getSellPrice() {
+    public double getSellPrice() {
         return sellPrice;
     }
 
-    public void setSellPrice(BigDecimal sellPrice) {
+    public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
     }
 
-    public String getProvider() {
-        return provider;
+    public int getProviderId() {
+        return providerId;
     }
 
-    public void setProvider(String provider) {
-        this.provider = provider;
+    public void setProviderId(int providerId) {
+        this.providerId = providerId;
     }
 
 }

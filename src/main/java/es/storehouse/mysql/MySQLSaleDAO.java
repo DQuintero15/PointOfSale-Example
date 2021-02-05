@@ -19,10 +19,8 @@ public class MySQLSaleDAO implements SaleDAO {
     Statement st;
     ResultSet rs;
     StringBuilder generatePurchase = new StringBuilder()
-            .append("INSERT INTO sale(product_id,amount,provider_id,price,date) ")
-            .append("SELECT product.product_id, ? ,provider.provider_id, ? , ? ")
-            .append("FROM product, provider ")
-            .append("WHERE product.name = ? AND product.provider = provider.name AND provider.name = ? ");
+            .append("INSERT INTO sale(product_id,amount,price,date) ")
+            .append("VALUES (?,?,?,?)");
 
     @Override
     public void insert(Sale a) {
@@ -54,18 +52,26 @@ public class MySQLSaleDAO implements SaleDAO {
         return false;
     }
 
-    public void generateSale(Sale s, Product p, Provider pro) throws StoreException {
+    public void generateSale(Sale s) throws StoreException {
         try {
 
             Conn.getConnection();
             ps = Conn.conn.prepareStatement(generatePurchase.toString());
-            ps.setInt(1, s.getAmount());
-            ps.setDouble(2, s.getPrice());
-            ps.setDate(3, s.getDate());
-            ps.setString(4, p.getName());
-            ps.setString(5, pro.getName());
+            ps.setInt(1, s.getProductId());
+            ps.setInt(2, s.getAmount());
+            ps.setDouble(3, s.getPrice());
+            ps.setDate(4, s.getDate());
 
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                StringBuilder updateStock = new StringBuilder()
+                        .append("UPDATE product ")
+                        .append("SET amount = product.amount - ? ")
+                        .append("WHERE product_id = ?");
+                ps = Conn.conn.prepareStatement(updateStock.toString());
+                ps.setInt(1, s.getAmount());
+                ps.setInt(2, s.getProductId());
+                ps.executeUpdate();
+            }
 
         } catch (SQLException ex) {
 

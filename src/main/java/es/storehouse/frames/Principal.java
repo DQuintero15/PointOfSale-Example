@@ -23,6 +23,7 @@ public class Principal extends javax.swing.JFrame {
     Inventory inventoryWindow;
     Providers providersWindow;
     Sales salesWindow;
+    Orders ordersWindow;
 
     public Principal() throws StoreException {
 
@@ -86,7 +87,7 @@ public class Principal extends javax.swing.JFrame {
         menuBar.add(menu_Inventory);
 
         menu_Provider.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("icons8-supplier-48.png")));
-        menu_Provider.setText("Provedores          ");
+        menu_Provider.setText("Proveedores          ");
         menu_Provider.setFont(new java.awt.Font("Roboto", 0, 15)); // NOI18N
         menu_Provider.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -108,6 +109,11 @@ public class Principal extends javax.swing.JFrame {
         menu_order.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("icons8-delivered-48.png")));
         menu_order.setText("Pedidos          ");
         menu_order.setFont(new java.awt.Font("Roboto", 0, 15)); // NOI18N
+        menu_order.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menu_orderMouseClicked(evt);
+            }
+        });
         menuBar.add(menu_order);
 
         menu_reports.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("icons8-business-report-48.png")));
@@ -167,6 +173,17 @@ public class Principal extends javax.swing.JFrame {
             salesWindow.setVisible(true);
         }
     }//GEN-LAST:event_menu_SalesMouseClicked
+
+    private void menu_orderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menu_orderMouseClicked
+        // TODO add your handling code here:
+        if (ordersWindow == null || ordersWindow.isClosed()) {
+            // Instanciacion del inventario
+            ordersWindow = new Orders();
+            desktopPane.add(ordersWindow);
+            ordersWindow.setBounds(desktopPane.getX(), desktopPane.getY(), desktopPane.getWidth(), desktopPane.getHeight());
+            ordersWindow.setVisible(true);
+        }
+    }//GEN-LAST:event_menu_orderMouseClicked
 
     /**
      * @param args the command line arguments

@@ -1,24 +1,30 @@
 package es.storehouse.models;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 
 public class Sale {
 
     private int saleId;
     private int amount;
-    private BigDecimal price;
+    private Double price;
     private Date date;
     private int productId;
 
-    public Sale(int saleId, int amount, BigDecimal price, Date date, int productId) {
-        this.saleId = saleId;
+    public Sale(int amount, Double price, Date date) {
+        this.amount = amount;
+        this.price = price;
+        this.date = date;
+    }
+
+    public Sale( int amount, Double price, Date date, int productId) {
         this.amount = amount;
         this.price = price;
         this.date = date;
         this.productId = productId;
     }
 
+    
+    
     public int getSaleId() {
         return saleId;
     }
@@ -35,11 +41,11 @@ public class Sale {
         this.amount = amount;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -58,5 +64,7 @@ public class Sale {
     public void setProductId(int productId) {
         this.productId = productId;
     }
+    
+    
 
 }
